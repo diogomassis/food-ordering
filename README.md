@@ -1,4 +1,4 @@
-# Food ordering system
+# Food Ordering System
 
 This repository is intended to hold code, articles and annotations related to the development of a distributed, scalable, microservice-oriented food ordering system.
 
@@ -11,6 +11,10 @@ This project won't make you richer (unless you create something innovative that 
 ## Project article
 
 To give you a better understanding of this project, in parallel I wrote an article for it explaining each point, concept or technology covered in this project. Access the [article written by me](docs/article/Food_Ordering_System.pdf).
+
+## Project details
+
+For implementation details and documentation, check the [project overview README](.md/project-overview.md).
 
 ## References
 
