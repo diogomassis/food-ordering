@@ -47,3 +47,31 @@ food-ordering-system (pom)
 * **`order-dataaccess`**: The persistence layer (secondary adapter) for interacting with the database.
 * **`order-messaging`**: The messaging layer (secondary adapter) for communication via Kafka.
 * **`order-container`**: Responsible for packaging the application into a runnable JAR and generating the Docker image.
+
+#### Dependencies graph
+
+![Dependencies Graph](../docs/images/dependency-graph.png)
+
+The dependencies graph illustrates the relationships between the modules in the ordering service. To generate this graph, follow these steps:
+
+* Install `graphviz` on your system.
+
+```bash
+sudo apt install graphviz -y
+```
+
+* Navigate to the `food-ordering-system` directory.
+
+```bash
+cd food-ordering-system
+```
+
+* Run the following Maven command to generate the dependencies graph:
+
+```bash
+mvn com.github.ferstl:depgraph-maven-plugin:aggregate -DcreateImage=true -DreduceEdges=false -Dscope=compile "-Dincludes=com.food.ordering.system*:*"
+```
+
+The generated graph will be saved in the `target` directory as `dependency-graph.png`. You can view it using any image viewer or web browser.
+
+According to the graph, all dependencies are correctly set up.
