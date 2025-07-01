@@ -75,3 +75,17 @@ mvn com.github.ferstl:depgraph-maven-plugin:aggregate -DcreateImage=true -Dreduc
 The generated graph will be saved in the `target` directory as `dependency-graph.png`. You can view it using any image viewer or web browser.
 
 According to the graph, all dependencies are correctly set up.
+
+#### Domain Logic Diagram
+
+![Domain Logic Diagram](../docs/images/order-service-domain-logic-oncourse.png)
+
+This diagram details the business logic contained within the `order-domain-core` module, using Domain-Driven Design concepts to model the order flow.
+
+* **`Aggregates`**: Represent a cluster of domain objects treated as a single unit. The **Order** is the **Aggregate Root**, which ensures the consistency of all operations (like adding items or paying). Other key aggregates include Restaurant and Customer.
+
+* **`Entities`**: These are the core objects with a unique identity, such as `Order` and `OrderItem`.
+
+* **`Value Objects`**: Represent descriptive attributes without a unique identity, such as `OrderId`, `StreetAddress`, and `Money`.
+
+* **`Domain Events`**: These are notifications of business actions that have occurred (e.g., `OrderCreatedEvent`, `OrderPaidEvent`). They are used to communicate changes to other parts of the system in a decoupled manner.
