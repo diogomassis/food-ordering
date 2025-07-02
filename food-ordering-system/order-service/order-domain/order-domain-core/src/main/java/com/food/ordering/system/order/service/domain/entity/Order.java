@@ -96,27 +96,87 @@ public class Order extends AggregateRoot<OrderId> {
         orderStatus = builder.orderStatus;
         failureMessages = builder.failureMessages;
     }
+
+    /**
+     * Initializes the order by generating a new unique {@link OrderId} and
+     * {@link TrackingId},
+     * setting the order status to {@link OrderStatus#PENDING}, and initializing the
+     * order items.
+     * This method should be called when creating a new order to ensure all required
+     * fields are set.
+     */
     public void initializeOrder() {
         setId(new OrderId(UUID.randomUUID()));
         trackingId = new TrackingId(UUID.randomUUID());
         orderStatus = OrderStatus.PENDING;
         initializeOrderItems();
     }
+
+    /**
+     * Validates the order by performing a series of checks:
+     * <ul>
+     * <li>Validates the initial state of the order.</li>
+     * <li>Validates that the total price of the order is correct.</li>
+     * <li>Validates that the prices of individual items are correct.</li>
+     * </ul>
+     * Throws a domain-specific exception if any validation fails.
+     */
     public void validateOrder() {
         validateInitialOrder();
         validateTotalPrice();
         validateItemsPrice();
     }
+
+    /**
+     * Validates that the order is in its initial state before initialization.
+     * <p>
+     * This method checks if the {@code orderStatus} and the order ID are both
+     * {@code null},
+     * indicating that the order has not yet been initialized. If either value is
+     * not {@code null},
+     * an {@link OrderDomainException} is thrown to signal that the order is not in
+     * the correct state
+     * for initialization.
+     *
+     * @throws OrderDomainException if the order has already been initialized or is
+     *                              not in the correct state
+     */
     private void validateInitialOrder() {
         if (orderStatus != null || getId() != null) {
             throw new OrderDomainException("Order is not in correct state for initialization!");
         }
     }
+
+    /**
+     * Validates that the total price of the order is not null and greater than
+     * zero.
+     * <p>
+     * Throws an {@link OrderDomainException} if the price is null or not greater
+     * than zero.
+     * </p>
+     *
+     * @throws OrderDomainException if the total price is null or less than or equal
+     *                              to zero
+     */
     private void validateTotalPrice() {
         if (price == null || !price.isGreaterThanZero()) {
             throw new OrderDomainException("Total price must be greater than zero!");
         }
     }
+
+    /**
+     * Validates that the total price of all order items matches the overall order
+     * price.
+     * <p>
+     * This method iterates through each {@code OrderItem} in the order, validates
+     * its price,
+     * and calculates the sum of all item subtotals. If the calculated total does
+     * not match
+     * the order's total price, an {@link OrderDomainException} is thrown.
+     *
+     * @throws OrderDomainException if the sum of item subtotals does not equal the
+     *                              order price
+     */
     private void validateItemsPrice() {
         Money orderItemsTotal = items.stream().map(orderItem -> {
             validateItemPrice(orderItem);
@@ -128,6 +188,17 @@ public class Order extends AggregateRoot<OrderId> {
                             + "!");
         }
     }
+
+    /**
+     * Validates the price of the given {@link OrderItem}.
+     * <p>
+     * If the price of the order item is not valid, this method throws an
+     * {@link OrderDomainException}
+     * with a message indicating the invalid price and the associated product name.
+     *
+     * @param orderItem the order item whose price is to be validated
+     * @throws OrderDomainException if the order item's price is not valid
+     */
     private void validateItemPrice(OrderItem orderItem) {
         if (!orderItem.isPriceValid()) {
             throw new OrderDomainException(
@@ -135,6 +206,15 @@ public class Order extends AggregateRoot<OrderId> {
                             + orderItem.getProduct().getName() + "!");
         }
     }
+
+    /**
+     * Initializes each {@link OrderItem} in the {@code items} list by assigning the
+     * current order's ID
+     * and a unique {@link OrderItemId} to each item. The item IDs start from 1 and
+     * increment by 1 for each item.
+     * This method ensures that all order items are properly linked to the order and
+     * have unique identifiers.
+     */
     private void initializeOrderItems() {
         long itemId = 1;
         for (OrderItem orderItem : items) {
