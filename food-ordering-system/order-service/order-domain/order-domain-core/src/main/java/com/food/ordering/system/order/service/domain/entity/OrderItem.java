@@ -62,11 +62,30 @@ public class OrderItem extends BaseEntity<OrderItemId> {
         price = builder.price;
         subTotal = builder.subTotal;
     }
+
+    /**
+     * Initializes the order item with the specified order ID and order item ID.
+     *
+     * @param orderId     the ID of the order to which this item belongs
+     * @param orderItemId the unique identifier for this order item
+     */
     public void initializeOrderItem(OrderId orderId, OrderItemId orderItemId) {
         this.orderId = orderId;
         setId(orderItemId);
     }
 
+    /**
+     * Validates the price of the order item.
+     * <p>
+     * This method checks if:
+     * <ul>
+     * <li>The price is greater than zero.</li>
+     * <li>The price matches the product's price.</li>
+     * <li>The subtotal equals the price multiplied by the quantity.</li>
+     * </ul>
+     *
+     * @return {@code true} if all price validations pass; {@code false} otherwise.
+     */
     public boolean isPriceValid() {
         return price.isGreaterThanZero() && price.equals(product.getPrice())
                 && price.multiply(quantity).equals(subTotal);
