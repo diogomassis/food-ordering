@@ -26,6 +26,11 @@ public class Money {
      * It is immutable and should not be modified after initialization.
      */
     private final BigDecimal amount;
+
+    /**
+     * A constant representing a monetary value of zero.
+     * This can be used as a default or initial value for monetary calculations.
+     */
     public static final Money ZERO = new Money(BigDecimal.ZERO);
 
     /**
