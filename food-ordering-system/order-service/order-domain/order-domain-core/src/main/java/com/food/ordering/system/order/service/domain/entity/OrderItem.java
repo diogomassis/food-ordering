@@ -62,6 +62,15 @@ public class OrderItem extends BaseEntity<OrderItemId> {
         price = builder.price;
         subTotal = builder.subTotal;
     }
+    public void initializeOrderItem(OrderId orderId, OrderItemId orderItemId) {
+        this.orderId = orderId;
+        setId(orderItemId);
+    }
+
+    public boolean isPriceValid() {
+        return price.isGreaterThanZero() && price.equals(product.getPrice())
+                && price.multiply(quantity).equals(subTotal);
+    }
 
     /**
      * Creates a new instance of the {@link Builder} for constructing
