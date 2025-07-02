@@ -17,7 +17,7 @@ public class TrackingId extends BaseId<UUID> {
      *
      * @param value the unique identifier for tracking an order
      */
-    protected TrackingId(UUID value) {
+    public TrackingId(UUID value) {
         super(value);
     }
 }

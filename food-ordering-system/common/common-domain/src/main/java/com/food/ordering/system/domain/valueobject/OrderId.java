@@ -17,7 +17,7 @@ public class OrderId extends BaseId<UUID> {
      * @param value the {@link UUID} representing the unique identifier for the
      *              order
      */
-    protected OrderId(UUID value) {
+    public OrderId(UUID value) {
         super(value);
     }
 }
