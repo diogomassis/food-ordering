@@ -84,6 +84,51 @@ public class Order extends AggregateRoot<OrderId> {
         private Builder() {
         }
 
+        public Builder orderId(OrderId orderId) {
+            this.orderId = orderId;
+            return this;
+        }
+
+        public Builder customerId(CustomerId customerId) {
+            this.customerId = customerId;
+            return this;
+        }
+
+        public Builder restaurantId(RestaurantId restaurantId) {
+            this.restaurantId = restaurantId;
+            return this;
+        }
+
+        public Builder deliveryAddress(StreetAddress deliveryAddress) {
+            this.deliveryAddress = deliveryAddress;
+            return this;
+        }
+
+        public Builder price(Money price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder items(List<OrderItem> items) {
+            this.items = items;
+            return this;
+        }
+
+        public Builder trackingId(TrackingId trackingId) {
+            this.trackingId = trackingId;
+            return this;
+        }
+
+        public Builder orderStatus(OrderStatus orderStatus) {
+            this.orderStatus = orderStatus;
+            return this;
+        }
+
+        public Builder failureMessages(List<String> failureMessages) {
+            this.failureMessages = failureMessages;
+            return this;
+        }
+
         public Order build() {
             return new Order(this);
         }
