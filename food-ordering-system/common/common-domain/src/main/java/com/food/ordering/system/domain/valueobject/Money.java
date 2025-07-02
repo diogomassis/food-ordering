@@ -26,6 +26,7 @@ public class Money {
      * It is immutable and should not be modified after initialization.
      */
     private final BigDecimal amount;
+    public static final Money ZERO = new Money(BigDecimal.ZERO);
 
     /**
      * Constructs a new {@code Money} instance with the specified amount.
