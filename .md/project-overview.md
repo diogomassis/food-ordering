@@ -89,3 +89,21 @@ This diagram details the business logic contained within the `order-domain-core`
 * **`Value Objects`**: Represent descriptive attributes without a unique identity, such as `OrderId`, `StreetAddress`, and `Money`.
 
 * **`Domain Events`**: These are notifications of business actions that have occurred (e.g., `OrderCreatedEvent`, `OrderPaidEvent`). They are used to communicate changes to other parts of the system in a decoupled manner.
+
+#### Order State Transition Diagram
+
+![Order State Transition Diagram](../docs/images/order-state-transitions.png)
+
+This diagram shows the order's lifecycle, managed by a Saga pattern to ensure consistency across services.
+
+The main states and transitions are:
+
+* **`PENDING`**: The initial state upon order creation. A payment request is sent to the `payment-request-topic`.
+
+* **`PAID`**: Reached after the `Payment Service` confirms payment via the `payment-response-topic`.
+
+* **`APPROVED`**: The final success state. The `Restaurant Service` confirms approval via the `restaurant-approval-response-topic`.
+
+* **`CANCELLING`**: An intermediate state for cancellations or failures. The Saga Coordinator begins compensating transactions, like a refund.
+
+* **`CANCELLED`**: The final state for a cancelled order, after all compensating actions are completed.
