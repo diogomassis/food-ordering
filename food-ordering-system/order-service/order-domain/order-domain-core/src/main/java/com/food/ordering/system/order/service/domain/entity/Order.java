@@ -128,6 +128,100 @@ public class Order extends AggregateRoot<OrderId> {
     }
 
     /**
+     * Processes the payment for the order.
+     * <p>
+     * Changes the order status from {@code PENDING} to {@code PAID}.
+     * If the order is not in the {@code PENDING} state, an
+     * {@link OrderDomainException} is thrown.
+     *
+     * @throws OrderDomainException if the order is not in the correct state for
+     *                              payment
+     */
+    public void pay() {
+        if (orderStatus != OrderStatus.PENDING) {
+            throw new OrderDomainException("Order is not in correct state for pay operation!");
+        }
+        orderStatus = OrderStatus.PAID;
+    }
+
+    /**
+     * Approves the order by changing its status from PAID to APPROVED.
+     * <p>
+     * This method should be called after the order has been paid and is ready for
+     * approval.
+     * If the order is not in the PAID state, an {@link OrderDomainException} is
+     * thrown.
+     *
+     * @throws OrderDomainException if the order is not in the PAID state
+     */
+    public void approve() {
+        if (orderStatus != OrderStatus.PAID) {
+            throw new OrderDomainException("Order is not in correct state for approve operation!");
+        }
+        orderStatus = OrderStatus.APPROVED;
+    }
+
+    /**
+     * Initiates the cancellation process for the order by changing its status from
+     * PAID to CANCELLING.
+     * <p>
+     * This method should be called when a cancellation is requested after payment
+     * but before approval.
+     * It also updates the failure messages associated with the order.
+     * If the order is not in the PAID state, an {@link OrderDomainException} is
+     * thrown.
+     *
+     * @param failureMessages a list of failure messages to associate with the order
+     * @throws OrderDomainException if the order is not in the PAID state
+     */
+    public void initCancel(List<String> failureMessages) {
+        if (orderStatus != OrderStatus.PAID) {
+            throw new OrderDomainException("Order is not in correct state for init cancel operation!");
+        }
+        orderStatus = OrderStatus.CANCELLING;
+        updateFailureMessages(failureMessages);
+    }
+
+    /**
+     * Cancels the order by changing its status to CANCELLED.
+     * <p>
+     * This method can be called if the order is in the CANCELLING or PENDING state.
+     * It also updates the failure messages associated with the order.
+     * If the order is not in the correct state, an {@link OrderDomainException} is
+     * thrown.
+     *
+     * @param failureMessages a list of failure messages to associate with the order
+     * @throws OrderDomainException if the order is not in the CANCELLING or PENDING
+     *                              state
+     */
+    public void cancel(List<String> failureMessages) {
+        if (!(orderStatus == OrderStatus.CANCELLING || orderStatus == OrderStatus.PENDING)) {
+            throw new OrderDomainException("Order is not in correct state for cancel operation!");
+        }
+        orderStatus = OrderStatus.CANCELLED;
+        updateFailureMessages(failureMessages);
+    }
+
+    /**
+     * Updates the failure messages associated with the order.
+     * <p>
+     * If the current failure messages list is not null, it appends the new messages
+     * (ignoring empty ones).
+     * If the current failure messages list is null, it sets it to the provided
+     * list.
+     *
+     * @param failureMessages a list of failure messages to add or set
+     */
+    private void updateFailureMessages(List<String> failureMessages) {
+        if (this.failureMessages != null && failureMessages != null) {
+            this.failureMessages.addAll(failureMessages.stream().filter(message -> !message.isEmpty()).toList());
+        }
+        if (this.failureMessages == null) {
+            this.failureMessages = failureMessages;
+        }
+    }
+
+    /**
      * Validates that the order is in its initial state before initialization.
      * <p>
      * This method checks if the {@code orderStatus} and the order ID are both
@@ -138,7 +232,7 @@ public class Order extends AggregateRoot<OrderId> {
      * the correct state
      * for initialization.
      *
-     * @throws OrderDomainException if the order has already been initialized or is
+     * @throws OrderDomainException if the order has already been initialize or is
      *                              not in the correct state
      */
     private void validateInitialOrder() {
