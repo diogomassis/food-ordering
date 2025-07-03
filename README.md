@@ -8,10 +8,6 @@ This project serves as a mental workout. This project aims to apply concepts of 
 
 This project won't make you richer (unless you create something innovative that can beat iFood or DoorDash), but it will make you smarter (if you dedicate yourself properly).
 
-## Project article
-
-To give you a better understanding of this project, in parallel I wrote an article for it explaining each point, concept or technology covered in this project. Access the [article written by me](docs/article/Food_Ordering_System.pdf).
-
 ## Project details
 
 For implementation details and documentation, check the [project overview README](.md/project-overview.md).
