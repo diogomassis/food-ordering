@@ -12,10 +12,6 @@ This project won't make you richer (unless you create something innovative that 
 
 For implementation details and documentation, check the [project overview README](.md/project-overview.md).
 
-## References
-
-Most of the references will be in the article I wrote.
-
 ---
 
 When you open this project, it will probably be incomplete, as it is still under development. The README and documentation will be updated gradually.
