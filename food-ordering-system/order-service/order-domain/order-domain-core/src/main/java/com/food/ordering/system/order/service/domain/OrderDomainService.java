@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class OrderDomainService implements IOrderDomainService {
+private static final String UTC = "UTC";
+
     @Override
     public OrderCreatedEvent validateAndInitiateOrder(Order order, Restaurant restaurant) {
         validateRestaurant(restaurant);
