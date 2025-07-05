@@ -50,6 +50,14 @@ public class OrderDomainService implements IOrderDomainService {
         throw new UnsupportedOperationException("Unimplemented method 'cancelOrder'");
     }
 
+    /**
+     * Validates if the given restaurant is active.
+     * <p>
+     * Throws an {@link OrderDomainException} if the restaurant is not active.
+     *
+     * @param restaurant the {@link Restaurant} to validate
+     * @throws OrderDomainException if the restaurant is not active
+     */
     private void validateRestaurant(Restaurant restaurant) {
         if (!restaurant.isActive()) {
             throw new OrderDomainException(
@@ -57,6 +65,15 @@ public class OrderDomainService implements IOrderDomainService {
         }
     }
 
+    /**
+     * Updates each {@link Product} in the order with the confirmed name and price
+     * from the corresponding product in the restaurant.
+     * <p>
+     * This ensures that the order uses the latest product information from the restaurant.
+     *
+     * @param order      the {@link Order} containing the items to update
+     * @param restaurant the {@link Restaurant} providing the confirmed product data
+     */
     private void setOrderProductInformation(Order order, Restaurant restaurant) {
         order.getItems().forEach(orderItem -> restaurant.getProducts().forEach(restaurantProduct -> {
             Product currentProduct = orderItem.getProduct();
