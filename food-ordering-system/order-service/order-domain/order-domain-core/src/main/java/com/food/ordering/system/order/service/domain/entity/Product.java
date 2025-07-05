@@ -53,6 +53,12 @@ public class Product extends BaseEntity<ProductId> {
         return price;
     }
 
+    /**
+     * Updates the product's name and price with the confirmed values.
+     *
+     * @param name  the confirmed name of the product
+     * @param price the confirmed price of the product as a {@link Money} object
+     */
     public void updateWithConfirmedNameAndPrice(String name, Money price) {
         this.name = name;
         this.price = price;
