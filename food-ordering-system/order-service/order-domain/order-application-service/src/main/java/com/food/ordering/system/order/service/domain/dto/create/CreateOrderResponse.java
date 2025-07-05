@@ -9,16 +9,31 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * Response object for the result of creating a new order.
+ * <p>
+ * Contains the order tracking ID, order status, and a message describing the
+ * result.
+ */
 @Getter
 @Builder
 @AllArgsConstructor
 public class CreateOrderResponse {
+    /**
+     * Unique tracking identifier for the created order.
+     */
     @NotNull
     private final UUID ordeTrackingId;
 
+    /**
+     * Status of the created order.
+     */
     @NotNull
     private final OrderStatus orderStatus;
 
+    /**
+     * Message describing the result of the order creation.
+     */
     @NotNull
     private final String message;
 }
