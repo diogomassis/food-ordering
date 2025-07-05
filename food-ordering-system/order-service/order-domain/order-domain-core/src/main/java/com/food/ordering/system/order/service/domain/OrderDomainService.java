@@ -37,8 +37,8 @@ private static final String UTC = "UTC";
 
     @Override
     public void approveOrder(Order order) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'approveOrder'");
+        order.approve();
+        log.info("Order with id {} is approved", order.getId().getValue());
     }
 
     @Override
@@ -50,8 +50,8 @@ private static final String UTC = "UTC";
 
     @Override
     public void cancelOrder(Order order) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cancelOrder'");
+        order.cancel(order.getFailureMessages());
+        log.info("Order with id {} is cancelled", order.getId().getValue());
     }
 
     /**
