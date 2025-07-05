@@ -69,7 +69,8 @@ public class OrderDomainService implements IOrderDomainService {
      * Updates each {@link Product} in the order with the confirmed name and price
      * from the corresponding product in the restaurant.
      * <p>
-     * This ensures that the order uses the latest product information from the restaurant.
+     * This ensures that the order uses the latest product information from the
+     * restaurant.
      *
      * @param order      the {@link Order} containing the items to update
      * @param restaurant the {@link Restaurant} providing the confirmed product data
