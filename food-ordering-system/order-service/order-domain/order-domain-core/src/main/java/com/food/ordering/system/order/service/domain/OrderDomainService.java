@@ -30,8 +30,9 @@ private static final String UTC = "UTC";
 
     @Override
     public OrderPaidEvent payOrder(Order order) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'payOrder'");
+        order.pay();
+        log.info("Order with id {} is paid", order.getId().getValue());
+        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 
     @Override
@@ -42,8 +43,9 @@ private static final String UTC = "UTC";
 
     @Override
     public OrderCancelledEvent cancelOrderPayment(Order order, List<String> failureMessages) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cancelOrderPayment'");
+        order.initCancel(failureMessages);
+        log.info("Order payment is cancelling for order id {}", order.getId().getValue());
+        return new OrderCancelledEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 
     @Override
