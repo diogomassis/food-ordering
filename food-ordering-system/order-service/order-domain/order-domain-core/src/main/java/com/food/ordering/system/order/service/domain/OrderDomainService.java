@@ -7,7 +7,9 @@ import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.event.OrderCancelledEvent;
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
 import com.food.ordering.system.order.service.domain.event.OrderPaidEvent;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class OrderDomainService implements IOrderDomainService {
 
     @Override
