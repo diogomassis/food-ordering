@@ -25,7 +25,7 @@ private static final String UTC = "UTC";
         order.validateOrder();
         order.initializeOrder();
         log.info("Order with id {} is initiated", order.getId().getValue());
-        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of("UTC")));
+        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 
     @Override
