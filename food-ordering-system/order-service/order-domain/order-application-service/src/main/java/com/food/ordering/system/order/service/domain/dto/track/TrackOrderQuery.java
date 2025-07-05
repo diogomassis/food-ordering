@@ -7,10 +7,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * Data transfer object representing a query to track an order by its tracking
+ * ID.
+ */
 @Getter
 @Builder
 @AllArgsConstructor
 public class TrackOrderQuery {
+    /**
+     * The unique tracking identifier of the order to be tracked.
+     */
     @NotNull
     private final UUID orderTrackingId;
 }
