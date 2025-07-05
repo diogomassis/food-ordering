@@ -10,15 +10,27 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * Data transfer object representing the response to a track order query.
+ */
 @Getter
 @Builder
 @AllArgsConstructor
 public class TrackOrderResponse {
+    /**
+     * The unique tracking identifier of the order.
+     */
     @NotNull
     private final UUID orderTrackingId;
 
+    /**
+     * The current status of the order.
+     */
     @NotNull
     private final OrderStatus orderStatus;
 
+    /**
+     * List of failure messages if there were issues tracking the order.
+     */
     private final List<String> failureMessages;
 }
