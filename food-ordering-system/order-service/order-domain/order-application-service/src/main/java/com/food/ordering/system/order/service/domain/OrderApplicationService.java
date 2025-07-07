@@ -1,5 +1,8 @@
 package com.food.ordering.system.order.service.domain;
 
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderCommand;
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.order.service.domain.dto.track.TrackOrderQuery;
@@ -7,6 +10,7 @@ import com.food.ordering.system.order.service.domain.dto.track.TrackOrderRespons
 import com.food.ordering.system.order.service.domain.ports.input.service.IOrderApplicationService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service class responsible for handling order-related application logic.
@@ -21,6 +25,9 @@ import jakarta.validation.Valid;
  * appropriate domain services.
  * </p>
  */
+@Slf4j
+@Validated
+@Service
 public class OrderApplicationService implements IOrderApplicationService {
     @Override
     public CreateOrderResponse createOrder(@Valid CreateOrderCommand createOrderCommand) {
