@@ -1,8 +1,6 @@
 package com.food.ordering.system.order.service.domain;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderCommand;
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
@@ -31,16 +29,23 @@ public class OrderCreateCommandHandler {
      */
     private final OrderCreateHelper orderCreateHelper;
 
+    /**
+     * Publisher for sending payment request messages when an order is created.
+     */
     private final OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher;
 
     /**
      * Constructs an instance of {@code OrderCreateCommandHandler} with the
      * specified dependencies.
      *
-     * @param orderDataMapper   the mapper used to convert between domain and data
-     *                          transfer objects
-     * @param orderCreateHelper the helper class to assist with order creation
-     *                          logic
+     * @param orderDataMapper                            the mapper used to convert
+     *                                                   between domain and data
+     *                                                   transfer objects
+     * @param orderCreateHelper                          the helper class to assist
+     *                                                   with order creation
+     *                                                   logic
+     * @param orderCreatedPaymentRequestMessagePublisher the publisher for payment
+     *                                                   request messages
      */
     public OrderCreateCommandHandler(OrderDataMapper orderDataMapper, OrderCreateHelper orderCreateHelper,
             OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher) {
