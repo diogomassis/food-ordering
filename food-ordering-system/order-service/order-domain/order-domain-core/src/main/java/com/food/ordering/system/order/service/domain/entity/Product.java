@@ -35,6 +35,11 @@ public class Product extends BaseEntity<ProductId> {
         this.price = price;
     }
 
+    /**
+     * Constructs a new Product with the specified ProductId.
+     *
+     * @param productId the unique identifier for the product
+     */
     public Product(ProductId productId) {
         super.setId(productId);
     }
