@@ -20,17 +20,54 @@ import com.food.ordering.system.order.service.domain.ports.output.repository.IRe
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Handles the creation of orders by processing {@link CreateOrderCommand}
+ * requests.
+ * Validates customer and restaurant existence, maps DTOs to domain entities,
+ * initiates order creation, and persists the order.
+ */
 @Slf4j
 @Component
 public class OrderCreateCommandHandler {
+    /**
+     * The domain service responsible for order business logic.
+     */
     private final IOrderDomainService orderDomainService;
+
+    /**
+     * Repository for persisting and retrieving orders.
+     */
     private final IOrderRepository orderRepository;
+
+    /**
+     * Repository for retrieving customer information.
+     */
     private final ICustomerRepository customerRepository;
+
+    /**
+     * Repository for retrieving restaurant information.
+     */
     private final IRestaurantRepository restaurantRepository;
+
+    /**
+     * Mapper for converting between DTOs and domain entities.
+     */
     private final OrderDataMapper orderDataMapper;
 
-    public OrderCreateCommandHandler(IOrderDomainService orderDomainService, IOrderRepository orderRepository,
-            ICustomerRepository customerRepository, IRestaurantRepository restaurantRepository,
+    /**
+     * Constructs an {@link OrderCreateCommandHandler} with required dependencies.
+     *
+     * @param orderDomainService   the domain service for order logic
+     * @param orderRepository      the repository for order persistence
+     * @param customerRepository   the repository for customer retrieval
+     * @param restaurantRepository the repository for restaurant retrieval
+     * @param orderDataMapper      the mapper for DTO/entity conversion
+     */
+    public OrderCreateCommandHandler(
+            IOrderDomainService orderDomainService,
+            IOrderRepository orderRepository,
+            ICustomerRepository customerRepository,
+            IRestaurantRepository restaurantRepository,
             OrderDataMapper orderDataMapper) {
         this.orderDomainService = orderDomainService;
         this.orderRepository = orderRepository;
@@ -39,6 +76,16 @@ public class OrderCreateCommandHandler {
         this.orderDataMapper = orderDataMapper;
     }
 
+    /**
+     * Creates a new order based on the provided {@link CreateOrderCommand}.
+     * Validates customer and restaurant, maps the command to an order entity,
+     * initiates order creation, and persists the order.
+     *
+     * @param createOrderCommand the command containing order details
+     * @return a {@link CreateOrderResponse} with order tracking information
+     * @throws OrderDomainException if customer or restaurant is not found, or order
+     *                              cannot be saved
+     */
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderCommand createOrderCommand) {
         checkCustomer(createOrderCommand.getCustomerId());
@@ -50,6 +97,13 @@ public class OrderCreateCommandHandler {
         return orderDataMapper.orderToCreateOrderResponse(savedOrder);
     }
 
+    /**
+     * Validates the existence of the restaurant specified in the order command.
+     *
+     * @param createOrderCommand the command containing restaurant information
+     * @return the found {@link Restaurant} entity
+     * @throws OrderDomainException if the restaurant is not found
+     */
     private Restaurant checkRestaurant(CreateOrderCommand createOrderCommand) {
         Restaurant restaurant = orderDataMapper.createOrderCommandToRestaurant(createOrderCommand);
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findRestaurantInformation(restaurant);
@@ -62,6 +116,12 @@ public class OrderCreateCommandHandler {
         return optionalRestaurant.get();
     }
 
+    /**
+     * Validates the existence of the customer by ID.
+     *
+     * @param customerId the UUID of the customer to check
+     * @throws OrderDomainException if the customer is not found
+     */
     private void checkCustomer(UUID customerId) {
         Optional<Customer> optionalCustomer = customerRepository.findCustomer(customerId);
         if (optionalCustomer.isEmpty()) {
@@ -70,6 +130,13 @@ public class OrderCreateCommandHandler {
         }
     }
 
+    /**
+     * Persists the given order entity.
+     *
+     * @param order the {@link Order} entity to save
+     * @return the saved {@link Order} entity
+     * @throws OrderDomainException if the order could not be saved
+     */
     private Order saveOrder(Order order) {
         Order savedOrder = orderRepository.save(order);
         if (savedOrder == null) {
