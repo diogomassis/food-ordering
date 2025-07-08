@@ -8,6 +8,8 @@ import com.food.ordering.system.order.service.domain.dto.create.CreateOrderRespo
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException;
 import com.food.ordering.system.order.service.domain.mapper.OrderDataMapper;
+import com.food.ordering.system.order.service.domain.ports.output.message.publisher.payment.OrderCreatedPaymentRequestMessagePublisher;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,6 +31,8 @@ public class OrderCreateCommandHandler {
      */
     private final OrderCreateHelper orderCreateHelper;
 
+    private final OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher;
+
     /**
      * Constructs an instance of {@code OrderCreateCommandHandler} with the
      * specified dependencies.
@@ -38,9 +42,11 @@ public class OrderCreateCommandHandler {
      * @param orderCreateHelper the helper class to assist with order creation
      *                          logic
      */
-    public OrderCreateCommandHandler(OrderDataMapper orderDataMapper, OrderCreateHelper orderCreateHelper) {
+    public OrderCreateCommandHandler(OrderDataMapper orderDataMapper, OrderCreateHelper orderCreateHelper,
+            OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher) {
         this.orderDataMapper = orderDataMapper;
         this.orderCreateHelper = orderCreateHelper;
+        this.orderCreatedPaymentRequestMessagePublisher = orderCreatedPaymentRequestMessagePublisher;
     }
 
     /**
@@ -53,9 +59,10 @@ public class OrderCreateCommandHandler {
      * @throws OrderDomainException if customer or restaurant is not found, or order
      *                              cannot be saved
      */
-    @Transactional
     public CreateOrderResponse createOrder(CreateOrderCommand createOrderCommand) {
         OrderCreatedEvent orderCreatedEvent = orderCreateHelper.persistOrder(createOrderCommand);
+        log.info("Order is created with id {}", orderCreatedEvent.getOrder().getId().getValue().toString());
+        orderCreatedPaymentRequestMessagePublisher.publish(orderCreatedEvent);
         return orderDataMapper.orderToCreateOrderResponse(orderCreatedEvent.getOrder());
     }
 }
