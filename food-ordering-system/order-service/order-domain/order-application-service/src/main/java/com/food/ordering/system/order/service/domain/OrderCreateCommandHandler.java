@@ -1,38 +1,82 @@
 package com.food.ordering.system.order.service.domain;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderCommand;
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderResponse;
+import com.food.ordering.system.order.service.domain.entity.Customer;
+import com.food.ordering.system.order.service.domain.entity.Order;
+import com.food.ordering.system.order.service.domain.entity.Restaurant;
+import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
+import com.food.ordering.system.order.service.domain.exception.OrderDomainException;
+import com.food.ordering.system.order.service.domain.mapper.OrderDataMapper;
+import com.food.ordering.system.order.service.domain.ports.output.repository.ICustomerRepository;
+import com.food.ordering.system.order.service.domain.ports.output.repository.IOrderRepository;
+import com.food.ordering.system.order.service.domain.ports.output.repository.IRestaurantRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Handles the creation of orders by processing {@link CreateOrderCommand}
- * commands.
- * This component is responsible for orchestrating the order creation workflow
- * and returning a {@link CreateOrderResponse} as a result.
- * 
- * <p>
- * Example usage:
- * 
- * <pre>
- * CreateOrderResponse response = orderCreateCommandHandler.createOrder(command);
- * </pre>
- * </p>
- */
 @Slf4j
 @Component
 public class OrderCreateCommandHandler {
+    private final IOrderDomainService orderDomainService;
+    private final IOrderRepository orderRepository;
+    private final ICustomerRepository customerRepository;
+    private final IRestaurantRepository restaurantRepository;
+    private final OrderDataMapper orderDataMapper;
 
-    /**
-     * Creates a new order based on the provided {@link CreateOrderCommand}.
-     *
-     * @param createOrderCommand the command containing order creation details
-     * @return a {@link CreateOrderResponse} containing the result of the order
-     *         creation process
-     */
+    public OrderCreateCommandHandler(IOrderDomainService orderDomainService, IOrderRepository orderRepository,
+            ICustomerRepository customerRepository, IRestaurantRepository restaurantRepository,
+            OrderDataMapper orderDataMapper) {
+        this.orderDomainService = orderDomainService;
+        this.orderRepository = orderRepository;
+        this.customerRepository = customerRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.orderDataMapper = orderDataMapper;
+    }
+
+    @Transactional
     public CreateOrderResponse createOrder(CreateOrderCommand createOrderCommand) {
-        return new CreateOrderResponse(null, null, null);
+        checkCustomer(createOrderCommand.getCustomerId());
+        Restaurant restaurant = checkRestaurant(createOrderCommand);
+        Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
+        OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant);
+        Order savedOrder = saveOrder(order);
+        log.info("Order is created with id {}", savedOrder.getId().getValue().toString());
+        return orderDataMapper.orderToCreateOrderResponse(savedOrder);
+    }
+
+    private Restaurant checkRestaurant(CreateOrderCommand createOrderCommand) {
+        Restaurant restaurant = orderDataMapper.createOrderCommandToRestaurant(createOrderCommand);
+        Optional<Restaurant> optionalRestaurant = restaurantRepository.findRestaurantInformation(restaurant);
+        if (optionalRestaurant.isEmpty()) {
+            log.warn("Could not find restaurant with restaurant id {}",
+                    createOrderCommand.getRestaurantId().toString());
+            throw new OrderDomainException(
+                    "Could not find restaurant with restaurant id " + createOrderCommand.getRestaurantId().toString());
+        }
+        return optionalRestaurant.get();
+    }
+
+    private void checkCustomer(UUID customerId) {
+        Optional<Customer> optionalCustomer = customerRepository.findCustomer(customerId);
+        if (optionalCustomer.isEmpty()) {
+            log.warn("Could not find customer with customer id {}", customerId.toString());
+            throw new OrderDomainException("Could not find customer with customer id " + customerId.toString());
+        }
+    }
+
+    private Order saveOrder(Order order) {
+        Order savedOrder = orderRepository.save(order);
+        if (savedOrder == null) {
+            log.warn("Could not save order!");
+            throw new OrderDomainException("Could not save order!");
+        }
+        log.info("Order is saved with id {}", savedOrder.getId().getValue().toString());
+        return savedOrder;
     }
 }
