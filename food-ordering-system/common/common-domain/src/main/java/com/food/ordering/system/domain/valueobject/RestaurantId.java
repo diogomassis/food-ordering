@@ -16,7 +16,7 @@ public class RestaurantId extends BaseId<UUID> {
      * @param value the {@link UUID} representing the unique identifier of the
      *              restaurant
      */
-    protected RestaurantId(UUID value) {
+    public RestaurantId(UUID value) {
         super(value);
     }
 }
