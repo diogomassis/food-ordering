@@ -21,7 +21,7 @@ public class ProductId extends BaseId<UUID> {
      * @param value the {@link UUID} value representing the unique identifier of the
      *              product
      */
-    protected ProductId(UUID value) {
+    public ProductId(UUID value) {
         super(value);
     }
 }

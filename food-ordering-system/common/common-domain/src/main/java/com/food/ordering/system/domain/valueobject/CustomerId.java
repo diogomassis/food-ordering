@@ -18,7 +18,7 @@ public class CustomerId extends BaseId<UUID> {
      * @param value the {@link UUID} value representing the unique identifier for
      *              the customer
      */
-    protected CustomerId(UUID value) {
+    public CustomerId(UUID value) {
         super(value);
     }
 }
