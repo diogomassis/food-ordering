@@ -28,16 +28,38 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Validated
 @Service
-public class OrderApplicationService implements IOrderApplicationService {
+class OrderApplicationService implements IOrderApplicationService {
+    /**
+     * Handler responsible for processing order creation commands.
+     */
+    private final OrderCreateCommandHandler orderCreateCommandHandler;
+
+    /**
+     * Handler responsible for processing order tracking commands.
+     */
+    private final OrderTrackCommandHandler orderTrackCommandHandler;
+
+    /**
+     * Constructs a new OrderApplicationService with the specified command handlers.
+     * 
+     * @param orderCreateCommandHandler the handler responsible for processing order
+     *                                  creation commands
+     * @param orderTrackCommandHandler  the handler responsible for processing order
+     *                                  tracking commands
+     */
+    public OrderApplicationService(OrderCreateCommandHandler orderCreateCommandHandler,
+            OrderTrackCommandHandler orderTrackCommandHandler) {
+        this.orderCreateCommandHandler = orderCreateCommandHandler;
+        this.orderTrackCommandHandler = orderTrackCommandHandler;
+    }
+
     @Override
     public CreateOrderResponse createOrder(@Valid CreateOrderCommand createOrderCommand) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createOrder'");
+        return orderCreateCommandHandler.createOrder(createOrderCommand);
     }
 
     @Override
     public TrackOrderResponse trackOrder(@Valid TrackOrderQuery trackOrderQuery) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'trackOrder'");
+        return orderTrackCommandHandler.trackOrder(trackOrderQuery);
     }
 }
