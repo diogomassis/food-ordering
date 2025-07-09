@@ -14,6 +14,18 @@ import com.food.ordering.system.order.service.domain.exception.OrderDomainExcept
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service class responsible for handling the domain logic related to orders.
+ * <p>
+ * This class implements the {@link IOrderDomainService} interface and provides
+ * methods for validating and initiating orders, processing payments, approving,
+ * and cancelling orders. It ensures that business rules are enforced, such as
+ * validating restaurant status and synchronizing product information between
+ * the order and the restaurant.
+ * <p>
+ * All domain events related to order state transitions are created here.
+ * Logging is performed for each significant state change.
+ */
 @Slf4j
 public class OrderDomainService implements IOrderDomainService {
     private static final String UTC = "UTC";
