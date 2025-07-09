@@ -1,2 +1,8 @@
+# Ignore Visual Studio Code settings directory
 .vscode/
+
+# Ignore build output directory
 target/
+
+# Ignore environment variable files containing sensitive data
+.env
