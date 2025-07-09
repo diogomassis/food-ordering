@@ -23,7 +23,7 @@ public class CreateOrderResponse {
      * Unique tracking identifier for the created order.
      */
     @NotNull
-    private final UUID ordeTrackingId;
+    private final UUID orderTrackingId;
 
     /**
      * Status of the created order.
