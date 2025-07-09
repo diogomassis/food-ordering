@@ -107,3 +107,21 @@ The main states and transitions are:
 * **`CANCELLING`**: An intermediate state for cancellations or failures. The Saga Coordinator begins compensating transactions, like a refund.
 
 * **`CANCELLED`**: The final state for a cancelled order, after all compensating actions are completed.
+
+#### Event Flow with Ports
+
+![Order Flow with Ports](../docs/images/event-flow-with-ports.png)
+
+This diagram illustrates the flow of events in the ordering system, highlighting the use of **input and output ports** for communication between the different services, following the principles of Hexagonal Architecture.
+
+The main flow is as follows:
+
+1. **`Order Creation`**: The process starts when the **Order Service** receives a `Create Order Http Request` through an input port. It then publishes an `Order Created Event` via an output port (`PaymentRequestMessagePublisher`).
+
+2. **`Payment Processing`**: The **Payment Service** listens for the `Order Created Event` on its input port. After processing the payment, it sends back a `Payment Completed Event` through its output port.
+
+3. **`Order Paid`**: The **Order Service** receives the `Payment Completed Event` on another input port. It then processes this event and sends an `Order Paid Event` to the next service via an output port (`RestaurantApprovalRequestMessagePublisher`).
+
+4. **`Restaurant Approval`**: The **Restaurant Service** receives the `Order Paid Event` at its input port. Once the restaurant approves the order, it publishes an `Order Approved Event` from its output port.
+
+5. **`Flow Completion`**: The **Order Service** receives the final `Order Approved Event` through an input port, which concludes the successful order processing saga.
