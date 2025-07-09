@@ -13,8 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Handles the creation of orders by processing {@link CreateOrderCommand}
  * requests.
+ * <p>
  * Validates customer and restaurant existence, maps DTOs to domain entities,
- * initiates order creation, and persists the order.
+ * initiates order creation, and persists the order. Publishes domain events
+ * after order creation.
+ * </p>
  */
 @Slf4j
 @Component
@@ -30,9 +33,9 @@ public class OrderCreateCommandHandler {
     private final OrderCreateHelper orderCreateHelper;
 
     /**
-     * Publisher for sending payment request messages when an order is created.
+     * Publishes domain events related to order creation.
      */
-    private final OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher;
+    private final ApplicationDomainEventPublisher applicationDomainEventPublisher;
 
     /**
      * Constructs an instance of {@code OrderCreateCommandHandler} with the
@@ -42,22 +45,29 @@ public class OrderCreateCommandHandler {
      *                                                   between domain and data
      *                                                   transfer objects
      * @param orderCreateHelper                          the helper class to assist
-     *                                                   with order creation
-     *                                                   logic
+     *                                                   with order creation logic
      * @param orderCreatedPaymentRequestMessagePublisher the publisher for payment
-     *                                                   request messages
+     *                                                   request messages (not used
+     *                                                   directly here)
+     * @param applicationDomainEventPublisher            the publisher for domain
+     *                                                   events
      */
-    public OrderCreateCommandHandler(OrderDataMapper orderDataMapper, OrderCreateHelper orderCreateHelper,
-            OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher) {
+    public OrderCreateCommandHandler(
+            OrderDataMapper orderDataMapper,
+            OrderCreateHelper orderCreateHelper,
+            OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher,
+            ApplicationDomainEventPublisher applicationDomainEventPublisher) {
         this.orderDataMapper = orderDataMapper;
         this.orderCreateHelper = orderCreateHelper;
-        this.orderCreatedPaymentRequestMessagePublisher = orderCreatedPaymentRequestMessagePublisher;
+        this.applicationDomainEventPublisher = applicationDomainEventPublisher;
     }
 
     /**
      * Creates a new order based on the provided {@link CreateOrderCommand}.
+     * <p>
      * Validates customer and restaurant, maps the command to an order entity,
-     * initiates order creation, and persists the order.
+     * initiates order creation, persists the order, and publishes a domain event.
+     * </p>
      *
      * @param createOrderCommand the command containing order details
      * @return a {@link CreateOrderResponse} with order tracking information
@@ -67,7 +77,7 @@ public class OrderCreateCommandHandler {
     public CreateOrderResponse createOrder(CreateOrderCommand createOrderCommand) {
         OrderCreatedEvent orderCreatedEvent = orderCreateHelper.persistOrder(createOrderCommand);
         log.info("Order is created with id {}", orderCreatedEvent.getOrder().getId().getValue().toString());
-        orderCreatedPaymentRequestMessagePublisher.publish(orderCreatedEvent);
+        applicationDomainEventPublisher.publish(orderCreatedEvent);
         return orderDataMapper.orderToCreateOrderResponse(orderCreatedEvent.getOrder());
     }
 }
