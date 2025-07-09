@@ -62,15 +62,21 @@ public class OrderDataMapper {
 
         /**
          * Maps an {@link Order} domain entity to a {@link CreateOrderResponse} DTO.
+         * <p>
+         * Extracts the tracking ID, order status, and a custom message from the order
+         * entity and builds a response object for order creation.
+         * </p>
          *
-         * @param order the {@link Order} entity to map
-         * @return a {@link CreateOrderResponse} containing the order's tracking ID and
-         *         status
+         * @param order   the {@link Order} entity to map
+         * @param message a custom message to include in the response
+         * @return a {@link CreateOrderResponse} containing the order's tracking ID,
+         *         status, and message
          */
-        public CreateOrderResponse orderToCreateOrderResponse(Order order) {
+        public CreateOrderResponse orderToCreateOrderResponse(Order order, String message) {
                 return CreateOrderResponse.builder()
                                 .ordeTrackingId(order.getTrackingId().getValue())
                                 .orderStatus(order.getOrderStatus())
+                                .message(message)
                                 .build();
         }
 
