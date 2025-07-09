@@ -85,6 +85,18 @@ public class OrderDataMapper {
                                 orderAddress.getCity());
         }
 
+        /**
+         * Maps an {@link Order} domain entity to a {@link TrackOrderResponse} DTO.
+         * <p>
+         * Extracts the tracking ID, order status, and any failure messages from the
+         * order
+         * entity and builds a response object for order tracking.
+         * </p>
+         *
+         * @param order the {@link Order} entity to map
+         * @return a {@link TrackOrderResponse} containing tracking information and
+         *         status
+         */
         public TrackOrderResponse orderToTrackOrderResponse(Order order) {
                 return TrackOrderResponse.builder()
                                 .orderTrackingId(order.getTrackingId().getValue())
