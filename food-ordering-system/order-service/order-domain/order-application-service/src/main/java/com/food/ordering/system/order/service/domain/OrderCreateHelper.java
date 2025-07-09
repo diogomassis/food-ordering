@@ -36,7 +36,7 @@ public class OrderCreateHelper {
     /**
      * Service for order domain logic and validation.
      */
-    private final OrderDomainService orderDomainService;
+    private final IOrderDomainService orderDomainService;
 
     /**
      * Repository for persisting and retrieving orders.
@@ -67,7 +67,7 @@ public class OrderCreateHelper {
      * @param restaurantRepository the repository for restaurant retrieval
      * @param orderDataMapper      the mapper for DTO and entity conversion
      */
-    public OrderCreateHelper(OrderDomainService orderDomainService, IOrderRepository orderRepository,
+    public OrderCreateHelper(IOrderDomainService orderDomainService, IOrderRepository orderRepository,
             ICustomerRepository customerRepository, IRestaurantRepository restaurantRepository,
             OrderDataMapper orderDataMapper) {
         this.orderDomainService = orderDomainService;
