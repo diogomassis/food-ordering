@@ -8,6 +8,15 @@ import com.food.ordering.system.order.service.domain.ports.input.message.listene
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Listener implementation for handling payment response messages.
+ * <p>
+ * This service listens for payment completion and cancellation events,
+ * and processes them accordingly. It implements the
+ * {@link IPaymentResponseMessageListener}
+ * interface to handle payment-related callbacks.
+ * </p>
+ */
 @Slf4j
 @Validated
 @Service
