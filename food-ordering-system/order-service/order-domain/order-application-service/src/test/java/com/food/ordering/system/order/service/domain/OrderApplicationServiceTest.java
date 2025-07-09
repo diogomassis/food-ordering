@@ -37,34 +37,86 @@ import com.food.ordering.system.order.service.domain.ports.output.repository.ICu
 import com.food.ordering.system.order.service.domain.ports.output.repository.IOrderRepository;
 import com.food.ordering.system.order.service.domain.ports.output.repository.IRestaurantRepository;
 
+/**
+ * Test class for {@link OrderApplicationService}.
+ * Contains unit tests for order creation scenarios.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = OrderTestConfiguration.class)
 public class OrderApplicationServiceTest {
+    /**
+     * The service under test for order application logic.
+     */
     @Autowired
     private OrderApplicationService orderApplicationService;
 
+    /**
+     * Mapper for converting between order DTOs and entities.
+     */
     @Autowired
     private OrderDataMapper orderDataMapper;
 
+    /**
+     * Repository for persisting and retrieving orders.
+     */
     @Autowired
     private IOrderRepository orderRepository;
 
+    /**
+     * Repository for persisting and retrieving customers.
+     */
     @Autowired
     private ICustomerRepository customerRepository;
 
+    /**
+     * Repository for persisting and retrieving restaurants.
+     */
     @Autowired
     private IRestaurantRepository restaurantRepository;
 
+    /**
+     * Command for creating a valid order.
+     */
     private CreateOrderCommand createOrderCommand;
+
+    /**
+     * Command for creating an order with an incorrect total price.
+     */
     private CreateOrderCommand createOrderCommandWrongPrice;
+
+    /**
+     * Command for creating an order with an incorrect product price.
+     */
     private CreateOrderCommand createOrderCommandWrongProductPrice;
 
+    /**
+     * Test customer ID.
+     */
     private final UUID CUSTOMER_ID = UUID.fromString("4dc6784f-6dc5-4f0b-b022-59043dccd497");
+
+    /**
+     * Test restaurant ID.
+     */
     private final UUID RESTAURANT_ID = UUID.fromString("fe24d24a-eca3-497f-9860-085292d65489");
+
+    /**
+     * Test product ID.
+     */
     private final UUID PRODUCT_ID = UUID.fromString("a9e4b069-269f-4036-b4c9-2e1e7333bbac");
+
+    /**
+     * Test order ID.
+     */
     private final UUID ORDER_ID = UUID.fromString("4731bef2-9324-474a-9673-8daa374dc062");
+
+    /**
+     * Test order price.
+     */
     private final BigDecimal PRICE = new BigDecimal("200.00");
 
+    /**
+     * Initializes test data and mocks before all tests.
+     */
     @BeforeAll
     public void init() {
         createOrderCommand = CreateOrderCommand.builder()
@@ -158,6 +210,9 @@ public class OrderApplicationServiceTest {
         when(orderRepository.save(any(Order.class))).thenReturn(order);
     }
 
+    /**
+     * Tests successful order creation.
+     */
     @Test
     public void testCreateOrder() {
         CreateOrderResponse createOrderResponse = orderApplicationService.createOrder(createOrderCommand);
@@ -166,6 +221,10 @@ public class OrderApplicationServiceTest {
         assertNotNull(createOrderResponse.getOrderTrackingId());
     }
 
+    /**
+     * Tests order creation with a wrong total price.
+     * Expects {@link OrderDomainException}.
+     */
     @Test
     public void testCreateOrderWithWrongTotalPrice() {
         OrderDomainException orderDomainException = assertThrows(OrderDomainException.class,
@@ -174,6 +233,10 @@ public class OrderApplicationServiceTest {
                 orderDomainException.getMessage());
     }
 
+    /**
+     * Tests order creation with a wrong product price.
+     * Expects {@link OrderDomainException}.
+     */
     @Test
     public void testCreateOrderWithWrongProductPrice() {
         OrderDomainException orderDomainException = assertThrows(OrderDomainException.class,
@@ -182,6 +245,10 @@ public class OrderApplicationServiceTest {
                 orderDomainException.getMessage());
     }
 
+    /**
+     * Tests order creation when the restaurant is not active.
+     * Expects {@link OrderDomainException}.
+     */
     @Test
     public void testCreateOrderWithPassiveRestaurant() {
         Restaurant restaurantResponse = Restaurant.builder()
