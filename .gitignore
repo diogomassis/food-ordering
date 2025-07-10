@@ -6,3 +6,6 @@ target/
 
 # Ignore environment variable files containing sensitive data
 .env
+
+# Ignore Docker volumes directory
+food-ordering-system/infrastructure/docker-compose/volumes/
