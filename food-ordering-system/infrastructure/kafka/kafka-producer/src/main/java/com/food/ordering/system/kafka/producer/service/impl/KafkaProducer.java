@@ -16,11 +16,25 @@ import com.food.ordering.system.kafka.producer.service.IKafkaProducer;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Kafka producer implementation for sending messages to Kafka topics.
+ *
+ * @param <K> the type of the key, must be Serializable
+ * @param <V> the type of the value, must extend SpecificRecordBase
+ */
 @Slf4j
 @Component
 public class KafkaProducer<K extends Serializable, V extends SpecificRecordBase> implements IKafkaProducer<K, V> {
+    /**
+     * KafkaTemplate used to send messages to Kafka.
+     */
     private final KafkaTemplate<K, V> kafkaTemplate;
 
+    /**
+     * Constructs a new KafkaProducer with the given KafkaTemplate.
+     *
+     * @param kafkaTemplate the KafkaTemplate to use for sending messages
+     */
     public KafkaProducer(KafkaTemplate<K, V> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
@@ -38,6 +52,10 @@ public class KafkaProducer<K extends Serializable, V extends SpecificRecordBase>
         }
     }
 
+    /**
+     * Closes the Kafka producer and releases resources.
+     * This method is called before the bean is destroyed.
+     */
     @PreDestroy
     public void close() {
         if (kafkaTemplate != null) {
