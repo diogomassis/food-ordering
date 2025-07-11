@@ -15,16 +15,41 @@ import org.springframework.kafka.core.ProducerFactory;
 import com.food.ordering.system.kafka.config.data.KafkaConfigData;
 import com.food.ordering.system.kafka.config.data.KafkaProducerConfigData;
 
+/**
+ * Configuration class for Kafka producer.
+ * Provides beans for producer configuration, factory, and template.
+ *
+ * @param <K> the type of the key, must be Serializable
+ * @param <V> the type of the value, must extend SpecificRecordBase
+ */
 @Configuration
 public class KafkaProducerConfig<K extends Serializable, V extends SpecificRecordBase> {
+    /**
+     * Kafka configuration data.
+     */
     private final KafkaConfigData kafkaConfigData;
+
+    /**
+     * Kafka producer-specific configuration data.
+     */
     private final KafkaProducerConfigData kafkaProducerConfigData;
 
+    /**
+     * Constructs a new KafkaProducerConfig with the given configuration data.
+     *
+     * @param kafkaConfigData         general Kafka configuration data
+     * @param kafkaProducerConfigData producer-specific configuration data
+     */
     public KafkaProducerConfig(KafkaConfigData kafkaConfigData, KafkaProducerConfigData kafkaProducerConfigData) {
         this.kafkaConfigData = kafkaConfigData;
         this.kafkaProducerConfigData = kafkaProducerConfigData;
     }
 
+    /**
+     * Creates a map of producer configuration properties.
+     *
+     * @return a map containing Kafka producer configuration properties
+     */
     @Bean
     public Map<String, Object> producerConfig() {
         Map<String, Object> props = new HashMap<>();
@@ -42,11 +67,21 @@ public class KafkaProducerConfig<K extends Serializable, V extends SpecificRecor
         return props;
     }
 
+    /**
+     * Creates a ProducerFactory bean for Kafka.
+     *
+     * @return a ProducerFactory instance
+     */
     @Bean
     public ProducerFactory<K, V> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
+    /**
+     * Creates a KafkaTemplate bean for sending messages.
+     *
+     * @return a KafkaTemplate instance
+     */
     @Bean
     public KafkaTemplate<K, V> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
