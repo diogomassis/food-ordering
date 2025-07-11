@@ -11,4 +11,11 @@
     <groupId>com.food.ordering.system</groupId>
     <artifactId>kafka-model</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+        </dependency>
+    </dependencies>
 </project>
