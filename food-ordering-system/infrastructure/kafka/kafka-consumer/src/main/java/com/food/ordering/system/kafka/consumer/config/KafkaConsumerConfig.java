@@ -17,16 +17,42 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import com.food.ordering.system.kafka.config.data.KafkaConfigData;
 import com.food.ordering.system.kafka.config.data.KafkaConsumerConfigData;
 
+/**
+ * Configuration class for Kafka consumer.
+ * Provides beans for consumer configuration, factory, and listener container
+ * factory.
+ *
+ * @param <K> the type of the key, must be Serializable
+ * @param <V> the type of the value, must extend SpecificRecordBase
+ */
 @Configuration
 public class KafkaConsumerConfig<K extends Serializable, V extends SpecificRecordBase> {
+    /**
+     * General Kafka configuration data.
+     */
     private final KafkaConfigData kafkaConfigData;
+
+    /**
+     * Kafka consumer-specific configuration data.
+     */
     private final KafkaConsumerConfigData kafkaConsumerConfigData;
 
+    /**
+     * Constructs a new KafkaConsumerConfig with the given configuration data.
+     *
+     * @param kafkaConfigData         general Kafka configuration data
+     * @param kafkaConsumerConfigData consumer-specific configuration data
+     */
     public KafkaConsumerConfig(KafkaConfigData kafkaConfigData, KafkaConsumerConfigData kafkaConsumerConfigData) {
         this.kafkaConfigData = kafkaConfigData;
         this.kafkaConsumerConfigData = kafkaConsumerConfigData;
     }
 
+    /**
+     * Creates a map of consumer configuration properties.
+     *
+     * @return a map containing Kafka consumer configuration properties
+     */
     @Bean
     public Map<String, Object> consumerConfig() {
         Map<String, Object> props = new HashMap<>();
@@ -46,11 +72,22 @@ public class KafkaConsumerConfig<K extends Serializable, V extends SpecificRecor
         return props;
     }
 
+    /**
+     * Creates a ConsumerFactory bean for Kafka.
+     *
+     * @return a ConsumerFactory instance
+     */
     @Bean
     public ConsumerFactory<K, V> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig());
     }
 
+    /**
+     * Creates a KafkaListenerContainerFactory bean for concurrent message listener
+     * containers.
+     *
+     * @return a KafkaListenerContainerFactory instance
+     */
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<K, V>> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<K, V> factory = new ConcurrentKafkaListenerContainerFactory<>();
