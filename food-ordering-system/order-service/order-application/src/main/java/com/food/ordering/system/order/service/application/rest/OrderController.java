@@ -18,16 +18,35 @@ import com.food.ordering.system.order.service.domain.ports.input.service.IOrderA
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * REST controller for managing orders in the food ordering system.
+ * Provides endpoints to create a new order and track an existing order by
+ * tracking ID.
+ */
 @Slf4j
 @RestController
 @RequestMapping(value = "/orders", produces = "application/vnd.api.v1+json")
 public class OrderController {
+    /**
+     * Service for handling order application logic.
+     */
     private final IOrderApplicationService orderApplicationService;
 
+    /**
+     * Constructs an OrderController with the specified order application service.
+     *
+     * @param orderApplicationService the service to handle order operations
+     */
     public OrderController(IOrderApplicationService orderApplicationService) {
         this.orderApplicationService = orderApplicationService;
     }
 
+    /**
+     * Creates a new order based on the provided command.
+     *
+     * @param createOrderCommand the command containing order details
+     * @return the response containing order creation details
+     */
     @PostMapping
     public ResponseEntity<CreateOrderResponse> createOrder(@RequestBody CreateOrderCommand createOrderCommand) {
         log.info("Creating order for customer {} at restaurant {}", createOrderCommand.getCustomerId(),
@@ -37,6 +56,12 @@ public class OrderController {
         return ResponseEntity.ok(createOrderResponse);
     }
 
+    /**
+     * Retrieves the status of an order by its tracking ID.
+     *
+     * @param trackingId the unique tracking ID of the order
+     * @return the response containing order tracking details
+     */
     @GetMapping("/{trackingId}")
     public ResponseEntity<TrackOrderResponse> getOrderByTrackingId(@PathVariable UUID trackingId) {
         TrackOrderQuery trackOrderQuery = TrackOrderQuery.builder().orderTrackingId(trackingId).build();
