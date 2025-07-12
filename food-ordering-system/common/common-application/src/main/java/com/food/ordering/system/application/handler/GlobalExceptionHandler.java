@@ -13,9 +13,20 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Global exception handler for the application.
+ * Handles general and validation exceptions, returning standardized error
+ * responses.
+ */
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * Handles all uncaught exceptions and returns a generic error response.
+     *
+     * @param exception the thrown exception
+     * @return an {@link ErrorDto} with a generic error message
+     */
     @ResponseBody
     @ExceptionHandler(value = { Exception.class })
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
@@ -24,6 +35,14 @@ public class GlobalExceptionHandler {
                 .message("Unexpected error!").build();
     }
 
+    /**
+     * Handles validation exceptions and returns a detailed error response.
+     * If the exception is a {@link ConstraintViolationException}, extracts all
+     * violation messages.
+     *
+     * @param validationException the thrown validation exception
+     * @return an {@link ErrorDto} with validation error details
+     */
     @ResponseBody
     @ExceptionHandler(value = { ValidationException.class })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
@@ -43,6 +62,12 @@ public class GlobalExceptionHandler {
         return errorDto;
     }
 
+    /**
+     * Extracts violation messages from a {@link ConstraintViolationException}.
+     *
+     * @param validationException the exception containing constraint violations
+     * @return a string with all violation messages joined by "--"
+     */
     private String extractViolationsFromException(ConstraintViolationException validationException) {
         return validationException.getConstraintViolations().stream().map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining("--"));
