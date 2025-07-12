@@ -13,9 +13,20 @@ import com.food.ordering.system.order.service.domain.exception.OrderNotFoundExce
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Global exception handler for the Order service.
+ * Handles order-specific exceptions and returns standardized error responses.
+ */
 @Slf4j
 @ControllerAdvice
 public class OrderGlobalExceptionHandler extends GlobalExceptionHandler {
+    /**
+     * Handles {@link OrderDomainException} and returns a BAD_REQUEST error
+     * response.
+     *
+     * @param orderDomainException the thrown domain exception
+     * @return an {@link ErrorDto} with error details
+     */
     @ResponseBody
     @ExceptionHandler(value = { OrderDomainException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -25,6 +36,13 @@ public class OrderGlobalExceptionHandler extends GlobalExceptionHandler {
                 .message(orderDomainException.getMessage()).build();
     }
 
+    /**
+     * Handles {@link OrderNotFoundException} and returns a NOT_FOUND error
+     * response.
+     *
+     * @param orderNotFoundException the thrown not found exception
+     * @return an {@link ErrorDto} with error details
+     */
     @ResponseBody
     @ExceptionHandler(value = { OrderNotFoundException.class })
     @ResponseStatus(HttpStatus.NOT_FOUND)
