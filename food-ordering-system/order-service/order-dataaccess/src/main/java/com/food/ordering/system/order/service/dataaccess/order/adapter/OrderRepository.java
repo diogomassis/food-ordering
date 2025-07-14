@@ -11,11 +11,35 @@ import com.food.ordering.system.order.service.domain.entity.Order;
 import com.food.ordering.system.order.service.domain.ports.output.repository.IOrderRepository;
 import com.food.ordering.system.order.service.domain.valueobject.TrackingId;
 
+/**
+ * Repository adapter implementation for Order entities.
+ * This class serves as an adapter between the domain layer and the data access
+ * layer,
+ * implementing the IOrderRepository interface and providing concrete
+ * implementations
+ * for order persistence operations.
+ */
 @Component
 public class OrderRepository implements IOrderRepository {
+
+    /**
+     * JPA repository for performing database operations on OrderEntity objects.
+     */
     private final IOrderJpaRepository orderJpaRepository;
+
+    /**
+     * Mapper for converting between Order domain objects and OrderEntity data
+     * access objects.
+     */
     private final OrderDataAccessMapper orderDataAccessMapper;
 
+    /**
+     * Constructs a new OrderRepository with the required dependencies.
+     * 
+     * @param orderJpaRepository    the JPA repository for order database operations
+     * @param orderDataAccessMapper the mapper for converting between domain and
+     *                              entity objects
+     */
     public OrderRepository(IOrderJpaRepository orderJpaRepository, OrderDataAccessMapper orderDataAccessMapper) {
         this.orderJpaRepository = orderJpaRepository;
         this.orderDataAccessMapper = orderDataAccessMapper;
