@@ -75,6 +75,11 @@ public class Order extends AggregateRoot<OrderId> {
     private List<String> failureMessages;
 
     /**
+     * Delimiter used to separate multiple failure messages in a single string.
+     */
+    public static final String FAILURE_MESSAGE_DELIMITER = ",";
+
+    /**
      * Constructs an Order instance using the provided Builder.
      * <p>
      * This private constructor initializes the Order entity with values from the
