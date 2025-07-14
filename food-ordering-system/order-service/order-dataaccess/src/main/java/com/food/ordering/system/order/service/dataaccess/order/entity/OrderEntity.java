@@ -77,7 +77,7 @@ public class OrderEntity {
      * Uses a one-to-one relationship with cascade operations.
      */
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    private OrderAddressEntity orderAddress;
+    private OrderAddressEntity address;
 
     /**
      * The list of items included in this order.
