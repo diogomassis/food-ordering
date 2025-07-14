@@ -36,7 +36,7 @@ public class OrderItemEntity {
      * Forms part of the composite primary key along with the order.
      */
     @Id
-    private UUID id;
+    private Long id;
 
     /**
      * The order that this item belongs to.
