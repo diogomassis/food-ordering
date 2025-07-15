@@ -1,5 +1,6 @@
 package com.food.ordering.system.order.service.dataaccess.restaurant.entity;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,9 +30,9 @@ public class RestaurantEntity {
     private UUID productId;
 
     private String restaurantName;
-    private String restaurantActive;
+    private Boolean restaurantActive;
     private String productName;
-    private String productPrice;
+    private BigDecimal productPrice;
 
     @Override
     public int hashCode() {
