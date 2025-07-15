@@ -10,11 +10,30 @@ import com.food.ordering.system.order.service.dataaccess.restaurant.repository.I
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.ports.output.repository.IRestaurantRepository;
 
+/**
+ * Repository adapter implementation for restaurant data access operations.
+ * Acts as a bridge between the domain layer and the data access layer,
+ * implementing the IRestaurantRepository port interface.
+ */
 public class RestaurantRepository implements IRestaurantRepository {
-
+    /**
+     * JPA repository for restaurant entity database operations.
+     */
     private final IRestaurantJpaRepository restaurantJpaRepository;
+
+    /**
+     * Mapper for converting between restaurant entities and domain objects.
+     */
     private final RestaurantDataAccessMapper restaurantDataAccessMapper;
 
+    /**
+     * Constructs a new RestaurantRepository with the required dependencies.
+     * 
+     * @param restaurantJpaRepository    the JPA repository for restaurant database
+     *                                   operations
+     * @param restaurantDataAccessMapper the mapper for entity-domain object
+     *                                   conversion
+     */
     public RestaurantRepository(IRestaurantJpaRepository restaurantJpaRepository,
             RestaurantDataAccessMapper restaurantDataAccessMapper) {
         this.restaurantJpaRepository = restaurantJpaRepository;
