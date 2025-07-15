@@ -14,6 +14,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * JPA entity representing a restaurant with associated product information.
+ * Maps to the order_restaurant_m_view materialized view in the restaurant
+ * schema.
+ * Uses composite primary key consisting of restaurantId and productId.
+ */
 @Getter
 @Setter
 @Builder
@@ -23,15 +29,38 @@ import lombok.Setter;
 @Table(name = "order_restaurant_m_view", schema = "restaurant")
 @Entity
 public class RestaurantEntity {
+    /**
+     * Unique identifier for the restaurant.
+     * Part of the composite primary key.
+     */
     @Id
     private UUID restaurantId;
 
+    /**
+     * Unique identifier for the product.
+     * Part of the composite primary key.
+     */
     @Id
     private UUID productId;
 
+    /**
+     * Name of the restaurant.
+     */
     private String restaurantName;
+
+    /**
+     * Indicates whether the restaurant is currently active and accepting orders.
+     */
     private Boolean restaurantActive;
+
+    /**
+     * Name of the product offered by the restaurant.
+     */
     private String productName;
+
+    /**
+     * Price of the product in the restaurant.
+     */
     private BigDecimal productPrice;
 
     @Override
