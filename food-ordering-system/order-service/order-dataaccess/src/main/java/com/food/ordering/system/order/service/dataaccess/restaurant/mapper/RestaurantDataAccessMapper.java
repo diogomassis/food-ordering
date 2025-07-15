@@ -14,14 +14,41 @@ import com.food.ordering.system.order.service.dataaccess.restaurant.exception.Re
 import com.food.ordering.system.order.service.domain.entity.Product;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 
+/**
+ * Data access mapper for restaurant-related entities and domain objects.
+ * Provides mapping functionality between restaurant entities and domain models
+ * in the order service data access layer.
+ */
 @Component
 public class RestaurantDataAccessMapper {
+
+    /**
+     * Converts a Restaurant domain object to a list of product UUIDs.
+     * Extracts all product IDs from the restaurant's product list for database
+     * queries.
+     * 
+     * @param restaurant the Restaurant domain object containing products
+     * @return a list of UUID values representing the product IDs
+     */
     public List<UUID> restaurantToRestaurantProducts(Restaurant restaurant) {
         return restaurant.getProducts().stream()
                 .map(product -> product.getId().getValue())
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Converts a list of RestaurantEntity objects to a Restaurant domain object.
+     * Maps database entities to domain model, combining product information from
+     * multiple entities
+     * that share the same restaurant ID.
+     * 
+     * @param restaurantEntities the list of RestaurantEntity objects from the
+     *                           database
+     * @return a Restaurant domain object with mapped products and restaurant
+     *         information
+     * @throws RestaurantDataAccessException if no restaurant entities are found in
+     *                                       the list
+     */
     public Restaurant restaurantEntityToRestaurant(List<RestaurantEntity> restaurantEntities) {
         RestaurantEntity restaurantEntity = restaurantEntities.stream().findFirst()
                 .orElseThrow(() -> new RestaurantDataAccessException("Restaurant could not be found!"));
