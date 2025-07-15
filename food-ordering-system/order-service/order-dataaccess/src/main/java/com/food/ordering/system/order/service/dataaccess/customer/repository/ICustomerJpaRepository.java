@@ -1,0 +1,12 @@
+package com.food.ordering.system.order.service.dataaccess.customer.repository;
+
+import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.food.ordering.system.order.service.dataaccess.customer.entity.CustomerEntity;
+
+@Repository
+public interface ICustomerJpaRepository extends JpaRepository<CustomerEntity, UUID> {
+}
