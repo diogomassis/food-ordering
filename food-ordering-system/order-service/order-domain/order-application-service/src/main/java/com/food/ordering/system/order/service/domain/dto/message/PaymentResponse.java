@@ -55,7 +55,7 @@ public class PaymentResponse {
     /**
      * The status of the payment.
      */
-    private PaymentStatus PaymentStatus;
+    private PaymentStatus paymentStatus;
 
     /**
      * List of failure messages if the payment failed.
