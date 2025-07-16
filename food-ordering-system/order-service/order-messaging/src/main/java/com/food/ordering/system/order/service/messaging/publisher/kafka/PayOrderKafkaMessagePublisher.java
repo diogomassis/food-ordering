@@ -11,14 +11,41 @@ import com.food.ordering.system.order.service.messaging.mapper.OrderMessagingDat
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Kafka message publisher for sending restaurant approval requests when an
+ * order is paid.
+ */
 @Slf4j
 @Component
 public class PayOrderKafkaMessagePublisher implements OrderPaidRestaurantRequestMessagePublisher {
+    /**
+     * Mapper for converting domain events to Avro models.
+     */
     private final OrderMessagingDataMapper orderMessagingDataMapper;
+
+    /**
+     * Configuration data for the order service.
+     */
     private final OrderServiceConfigData orderServiceConfigData;
+
+    /**
+     * Helper for Kafka message operations.
+     */
     private final OrderKafkaMessageHelper orderKafkaMessageHelper;
+
+    /**
+     * Kafka producer for sending messages.
+     */
     private final IKafkaProducer<String, RestaurantApprovalRequestAvroModel> kafkaProducer;
 
+    /**
+     * Constructs a PayOrderKafkaMessagePublisher with required dependencies.
+     *
+     * @param orderMessagingDataMapper Mapper for domain events to Avro models
+     * @param orderServiceConfigData   Configuration data for order service
+     * @param orderKafkaMessageHelper  Helper for Kafka message operations
+     * @param kafkaProducer            Kafka producer for sending messages
+     */
     public PayOrderKafkaMessagePublisher(OrderMessagingDataMapper orderMessagingDataMapper,
             OrderServiceConfigData orderServiceConfigData, OrderKafkaMessageHelper orderKafkaMessageHelper,
             IKafkaProducer<String, RestaurantApprovalRequestAvroModel> kafkaProducer) {
