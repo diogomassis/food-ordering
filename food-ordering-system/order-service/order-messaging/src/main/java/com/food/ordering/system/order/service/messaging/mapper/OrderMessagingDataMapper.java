@@ -111,6 +111,15 @@ public class OrderMessagingDataMapper {
                                 .build();
         }
 
+        /**
+         * Converts a PaymentResponseAvroModel to a PaymentResponse domain DTO.
+         * This method maps the payment response Avro model data to the domain
+         * PaymentResponse object.
+         *
+         * @param paymentResponseAvroModel the Avro model containing payment response
+         *                                 data
+         * @return PaymentResponse domain DTO with mapped data
+         */
         public PaymentResponse paymentResponseAvroModelToPaymentResponse(
                         PaymentResponseAvroModel paymentResponseAvroModel) {
                 return PaymentResponse.builder()
@@ -127,6 +136,16 @@ public class OrderMessagingDataMapper {
                                 .build();
         }
 
+        /**
+         * Converts a RestaurantApprovalResponseAvroModel to a
+         * RestaurantApprovalResponse domain DTO.
+         * This method maps the restaurant approval response Avro model data to the
+         * domain RestaurantApprovalResponse object.
+         *
+         * @param restaurantApprovalResponseAvroModel the Avro model containing
+         *                                            restaurant approval response data
+         * @return RestaurantApprovalResponse domain DTO with mapped data
+         */
         public RestaurantApprovalResponse approvalResponseAvroModelToApprovalResponse(
                         RestaurantApprovalResponseAvroModel restaurantApprovalResponseAvroModel) {
                 return RestaurantApprovalResponse.builder()
