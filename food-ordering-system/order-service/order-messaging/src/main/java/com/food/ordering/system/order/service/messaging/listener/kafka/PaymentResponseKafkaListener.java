@@ -18,12 +18,33 @@ import com.food.ordering.system.order.service.messaging.mapper.OrderMessagingDat
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Kafka listener for payment response messages.
+ * This class listens to payment response events from Kafka and delegates
+ * processing
+ * to the appropriate domain service based on payment status.
+ */
 @Slf4j
 @Component
 public class PaymentResponseKafkaListener implements IKafkaConsumer<PaymentResponseAvroModel> {
+    /**
+     * Domain service for handling payment response messages.
+     */
     private final IPaymentResponseMessageListener paymentResponseMessageListener;
+
+    /**
+     * Mapper for converting Avro models to domain DTOs.
+     */
     private final OrderMessagingDataMapper orderMessagingDataMapper;
 
+    /**
+     * Constructs a PaymentResponseKafkaListener with required dependencies.
+     *
+     * @param paymentResponseMessageListener the domain service for payment
+     *                                       responses
+     * @param orderMessagingDataMapper       the mapper for Avro to domain
+     *                                       conversion
+     */
     public PaymentResponseKafkaListener(IPaymentResponseMessageListener paymentResponseMessageListener,
             OrderMessagingDataMapper orderMessagingDataMapper) {
         this.paymentResponseMessageListener = paymentResponseMessageListener;
