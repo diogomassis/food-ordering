@@ -19,13 +19,36 @@ import com.food.ordering.system.order.service.messaging.mapper.OrderMessagingDat
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Kafka listener for restaurant approval response messages.
+ * This class listens to restaurant approval response events from Kafka and
+ * delegates processing
+ * to the appropriate domain service based on approval status.
+ */
 @Slf4j
 @Component
 public class RestaurantApprovalResponseKafkaListener
         implements IKafkaConsumer<RestaurantApprovalResponseAvroModel> {
+    /**
+     * Domain service for handling restaurant approval response messages.
+     */
     private final IRestaurantApprovalResponseMessageListener restaurantApprovalResponseMessageListener;
+
+    /**
+     * Mapper for converting Avro models to domain DTOs.
+     */
     private final OrderMessagingDataMapper orderMessagingDataMapper;
 
+    /**
+     * Constructs a RestaurantApprovalResponseKafkaListener with required
+     * dependencies.
+     *
+     * @param restaurantApprovalResponseMessageListener the domain service for
+     *                                                  restaurant approval
+     *                                                  responses
+     * @param orderMessagingDataMapper                  the mapper for Avro to
+     *                                                  domain conversion
+     */
     public RestaurantApprovalResponseKafkaListener(
             IRestaurantApprovalResponseMessageListener restaurantApprovalResponseMessageListener,
             OrderMessagingDataMapper orderMessagingDataMapper) {
