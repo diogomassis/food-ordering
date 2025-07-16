@@ -8,9 +8,27 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Helper class for handling Kafka message publishing callbacks for
+ * order-related events.
+ */
 @Slf4j
 @Component
 public class OrderKafkaMessageHelper {
+
+    /**
+     * Returns a Kafka callback {@link BiConsumer} to handle the result of sending a
+     * message.
+     *
+     * @param requestTopicName     the name of the Kafka topic to which the message
+     *                             is sent
+     * @param requestAvroModel     the Avro model representing the message payload
+     * @param orderId              the ID of the order associated with the message
+     * @param requestAvroModelName the name of the Avro model type
+     * @param <T>                  the type of the Avro model
+     * @return a {@link BiConsumer} that logs success or error information after
+     *         message publishing
+     */
     public <T> BiConsumer<SendResult<String, T>, Throwable> getKafkaCallback(
             String requestTopicName, T requestAvroModel, String orderId, String requestAvroModelName) {
         return (sendResult, throwable) -> {
