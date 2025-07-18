@@ -10,7 +10,9 @@ services:
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=order
     volumes:
-      - ../food-ordering-system/order-service/order-container/src/main/resources/init-schema.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../food-ordering-system/order-service/order-container/src/main/resources/init-schema.sql:/docker-entrypoint-initdb.d/init_01.sql
+      - ../food-ordering-system/customer-service/src/main/resources/init-schema.sql:/docker-entrypoint-initdb.d/init_02.sql
+      - ../food-ordering-system/customer-service/src/main/resources/init-data.sql:/docker-entrypoint-initdb.d/init_03.sql
       - postgresData:/var/lib/postgresql/data
     networks:
       - postgres-network
