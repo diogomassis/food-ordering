@@ -31,7 +31,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "orders")
+@Table(name = "orders", schema = "order")
 @Entity
 public class OrderEntity {
     /**
