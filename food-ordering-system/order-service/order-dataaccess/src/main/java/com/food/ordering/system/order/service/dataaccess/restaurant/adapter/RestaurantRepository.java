@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.stereotype.Component;
+
 import com.food.ordering.system.order.service.dataaccess.restaurant.entity.RestaurantEntity;
 import com.food.ordering.system.order.service.dataaccess.restaurant.mapper.RestaurantDataAccessMapper;
 import com.food.ordering.system.order.service.dataaccess.restaurant.repository.IRestaurantJpaRepository;
@@ -15,6 +17,7 @@ import com.food.ordering.system.order.service.domain.ports.output.repository.IRe
  * Acts as a bridge between the domain layer and the data access layer,
  * implementing the IRestaurantRepository port interface.
  */
+@Component
 public class RestaurantRepository implements IRestaurantRepository {
     /**
      * JPA repository for restaurant entity database operations.
