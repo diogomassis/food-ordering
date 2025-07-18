@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres
+    restart: always
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=order
+    volumes:
+      - ../food-ordering-system/order-service/order-container/src/main/resources/init-schema.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgresData:/var/lib/postgresql/data
+    networks:
+      - postgres-network
+
+networks:
+  postgres-network:
+    driver: bridge
+
+volumes:
+  postgresData:
