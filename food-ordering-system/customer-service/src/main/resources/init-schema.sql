@@ -44,3 +44,8 @@ CREATE trigger refresh_order_customer_m_view
 after INSERT OR UPDATE OR DELETE OR truncate
 ON customer.customers FOR each statement
 EXECUTE PROCEDURE customer.refresh_order_customer_m_view();
+
+GRANT USAGE ON SCHEMA customer TO postgres;
+GRANT SELECT ON customer.order_customer_m_view TO postgres;
+GRANT SELECT ON ALL TABLES IN SCHEMA customer TO postgres;
+ALTER DEFAULT PRIVILEGES IN SCHEMA customer GRANT SELECT ON TABLES TO postgres;

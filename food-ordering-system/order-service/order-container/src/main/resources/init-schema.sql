@@ -116,13 +116,26 @@ CREATE INDEX "restaurant_approval_outbox_saga_status"
 --    ON "order".restaurant_approval_outbox
 --    (type, saga_id, saga_status);
 
-DROP TABLE IF EXISTS "order".customers CASCADE;
-
-CREATE TABLE "order".customers
-(
-    id uuid NOT NULL,
-    username character varying COLLATE pg_catalog."default" NOT NULL,
-    first_name character varying COLLATE pg_catalog."default" NOT NULL,
-    last_name character varying COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT customers_pkey PRIMARY KEY (id)
-);
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables 
+               WHERE table_schema = 'customer' 
+               AND table_name = 'order_customer_m_view'
+               AND table_type = 'VIEW') THEN
+        
+        EXECUTE 'DROP VIEW IF EXISTS "order".order_customer_m_view';
+        EXECUTE 'CREATE VIEW "order".order_customer_m_view AS 
+                 SELECT * FROM customer.order_customer_m_view';
+    END IF;
+EXCEPTION 
+    WHEN OTHERS THEN
+        EXECUTE 'DROP TABLE IF EXISTS "order".customers CASCADE';
+        EXECUTE 'CREATE TABLE "order".customers
+                (
+                    id uuid NOT NULL,
+                    username character varying COLLATE pg_catalog."default" NOT NULL,
+                    first_name character varying COLLATE pg_catalog."default" NOT NULL,
+                    last_name character varying COLLATE pg_catalog."default" NOT NULL,
+                    CONSTRAINT customers_pkey PRIMARY KEY (id)
+                )';
+END $$;
