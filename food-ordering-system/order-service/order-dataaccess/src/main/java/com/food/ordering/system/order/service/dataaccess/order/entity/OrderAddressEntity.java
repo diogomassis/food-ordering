@@ -27,7 +27,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "order_address", schema = "order")
+@Table(name = "order_address", schema = "\"order\"")
 @Entity
 public class OrderAddressEntity {
     /**
