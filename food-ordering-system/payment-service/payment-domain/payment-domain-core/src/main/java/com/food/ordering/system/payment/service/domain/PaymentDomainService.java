@@ -22,6 +22,13 @@ import com.food.ordering.system.payment.service.domain.valueobject.TransactionTy
 
 import static com.food.ordering.system.domain.DomainConstants.UTC;
 
+/**
+ * Implementation of the payment domain service that provides core business
+ * logic
+ * for payment processing operations including validation, initiation, and
+ * cancellation.
+ * This service orchestrates payment workflows and manages credit operations.
+ */
 @Slf4j
 public class PaymentDomainService implements IPaymentDomainService {
     @Override
@@ -71,6 +78,16 @@ public class PaymentDomainService implements IPaymentDomainService {
         }
     }
 
+    /**
+     * Validates that the customer has sufficient credit to complete the payment.
+     * Checks if the payment amount is greater than the available credit amount
+     * and adds a failure message if insufficient credit is available.
+     *
+     * @param payment         the payment to validate
+     * @param creditEntry     the customer's credit entry containing available
+     *                        credit
+     * @param failureMessages list to add validation failure messages to
+     */
     private void validateCreditEntry(Payment payment, CreditEntry creditEntry, List<String> failureMessages) {
         if (payment.getPrice().isGreaterThan(creditEntry.getTotalCreditAmount())) {
             log.error("Customer with id: {} doesn't have enough credit for payment!",
@@ -80,10 +97,26 @@ public class PaymentDomainService implements IPaymentDomainService {
         }
     }
 
+    /**
+     * Subtracts the payment amount from the customer's credit entry.
+     * This operation reduces the available credit by the payment amount.
+     *
+     * @param payment     the payment containing the amount to subtract
+     * @param creditEntry the customer's credit entry to update
+     */
     private void subtractCreditEntry(Payment payment, CreditEntry creditEntry) {
         creditEntry.subtractCreditAmount(payment.getPrice());
     }
 
+    /**
+     * Updates the credit history by adding a new transaction record.
+     * Creates a new credit history entry with the payment details and specified
+     * transaction type.
+     *
+     * @param payment         the payment to record in history
+     * @param creditHistories the list of credit history entries to update
+     * @param transactionType the type of transaction (CREDIT or DEBIT)
+     */
     private void updateCreditHistory(Payment payment,
             List<CreditHistory> creditHistories,
             TransactionType transactionType) {
@@ -95,6 +128,15 @@ public class PaymentDomainService implements IPaymentDomainService {
                 .build());
     }
 
+    /**
+     * Validates the credit history consistency and ensures data integrity.
+     * Checks that total debits don't exceed total credits and that the current
+     * credit amount matches the calculated history balance.
+     *
+     * @param creditEntry     the customer's credit entry to validate against
+     * @param creditHistories the list of credit history entries to validate
+     * @param failureMessages list to add validation failure messages to
+     */
     private void validateCreditHistory(CreditEntry creditEntry,
             List<CreditHistory> creditHistories,
             List<String> failureMessages) {
@@ -116,6 +158,15 @@ public class PaymentDomainService implements IPaymentDomainService {
         }
     }
 
+    /**
+     * Calculates the total amount for a specific transaction type from credit
+     * history.
+     * Filters credit history entries by transaction type and sums their amounts.
+     *
+     * @param creditHistories the list of credit history entries to process
+     * @param transactionType the transaction type to filter by (CREDIT or DEBIT)
+     * @return the total amount for the specified transaction type
+     */
     private Money getTotalHistoryAmount(List<CreditHistory> creditHistories, TransactionType transactionType) {
         return creditHistories.stream()
                 .filter(creditHistory -> transactionType == creditHistory.getTransactionType())
@@ -123,6 +174,14 @@ public class PaymentDomainService implements IPaymentDomainService {
                 .reduce(Money.ZERO, Money::add);
     }
 
+    /**
+     * Adds the payment amount to the customer's credit entry.
+     * This operation increases the available credit by the payment amount,
+     * typically used during payment cancellation to refund the credit.
+     *
+     * @param payment     the payment containing the amount to add back
+     * @param creditEntry the customer's credit entry to update
+     */
     private void addCreditEntry(Payment payment, CreditEntry creditEntry) {
         creditEntry.addCreditAmount(payment.getPrice());
     }
