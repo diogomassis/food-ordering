@@ -14,6 +14,8 @@ import com.food.ordering.system.order.service.domain.exception.OrderDomainExcept
 
 import lombok.extern.slf4j.Slf4j;
 
+import static com.food.ordering.system.domain.DomainConstants.UTC;
+
 /**
  * Service class responsible for handling the domain logic related to orders.
  * <p>
@@ -28,8 +30,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class OrderDomainService implements IOrderDomainService {
-    private static final String UTC = "UTC";
-
     @Override
     public OrderCreatedEvent validateAndInitiateOrder(Order order, Restaurant restaurant) {
         validateRestaurant(restaurant);
