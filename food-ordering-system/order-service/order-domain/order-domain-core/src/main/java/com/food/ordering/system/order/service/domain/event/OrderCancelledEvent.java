@@ -2,6 +2,7 @@ package com.food.ordering.system.order.service.domain.event;
 
 import java.time.ZonedDateTime;
 
+import com.food.ordering.system.domain.event.publisher.IDomainEventPublisher;
 import com.food.ordering.system.order.service.domain.entity.Order;
 
 /**
@@ -24,13 +25,26 @@ import com.food.ordering.system.order.service.domain.entity.Order;
  */
 public class OrderCancelledEvent extends OrderEvent {
     /**
+     * Publisher responsible for publishing the order cancelled domain event.
+     */
+    private final IDomainEventPublisher<OrderCancelledEvent> domainEventPublisher;
+
+    /**
      * Constructs a new {@code OrderCancelledEvent} for the specified order and
      * timestamp.
      *
      * @param order     the order that was cancelled
      * @param createdAt the time when the cancellation event was created
+     * @param domainEventPublisher the publisher for this event
      */
-    public OrderCancelledEvent(Order order, ZonedDateTime createdAt) {
+    public OrderCancelledEvent(Order order, ZonedDateTime createdAt,
+            IDomainEventPublisher<OrderCancelledEvent> domainEventPublisher) {
         super(order, createdAt);
+        this.domainEventPublisher = domainEventPublisher;
+    }
+
+    @Override
+    public void fire() {
+        domainEventPublisher.publish(this);
     }
 }

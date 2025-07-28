@@ -2,6 +2,7 @@ package com.food.ordering.system.order.service.domain.event;
 
 import java.time.ZonedDateTime;
 
+import com.food.ordering.system.domain.event.publisher.IDomainEventPublisher;
 import com.food.ordering.system.order.service.domain.entity.Order;
 
 /**
@@ -22,13 +23,26 @@ import com.food.ordering.system.order.service.domain.entity.Order;
  */
 public class OrderPaidEvent extends OrderEvent {
     /**
+     * Publisher responsible for publishing the order paid domain event.
+     */
+    private final IDomainEventPublisher<OrderPaidEvent> domainEventPublisher;
+
+    /**
      * Constructs a new {@code OrderPaidEvent} for the specified order and
      * timestamp.
      *
-     * @param order     the order that was paid
-     * @param createdAt the time when the payment event was created
+     * @param order                the order that was paid
+     * @param createdAt            the time when the payment event was created
+     * @param domainEventPublisher the publisher for this event
      */
-    public OrderPaidEvent(Order order, ZonedDateTime createdAt) {
+    public OrderPaidEvent(Order order, ZonedDateTime createdAt,
+            IDomainEventPublisher<OrderPaidEvent> domainEventPublisher) {
         super(order, createdAt);
+        this.domainEventPublisher = domainEventPublisher;
+    }
+
+    @Override
+    public void fire() {
+        domainEventPublisher.publish(this);
     }
 }

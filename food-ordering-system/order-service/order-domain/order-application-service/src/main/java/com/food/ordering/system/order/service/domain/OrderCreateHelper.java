@@ -13,6 +13,7 @@ import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException;
 import com.food.ordering.system.order.service.domain.mapper.OrderDataMapper;
+import com.food.ordering.system.order.service.domain.ports.output.message.publisher.payment.OrderCreatedPaymentRequestMessagePublisher;
 import com.food.ordering.system.order.service.domain.ports.output.repository.ICustomerRepository;
 import com.food.ordering.system.order.service.domain.ports.output.repository.IOrderRepository;
 import com.food.ordering.system.order.service.domain.ports.output.repository.IRestaurantRepository;
@@ -59,22 +60,36 @@ public class OrderCreateHelper {
     private final OrderDataMapper orderDataMapper;
 
     /**
+     * Publisher for sending order created payment request messages.
+     */
+    private final OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher;
+
+    /**
      * Constructs an {@code OrderCreateHelper} with required dependencies.
      *
-     * @param orderDomainService   the domain service for order logic
-     * @param orderRepository      the repository for order persistence
-     * @param customerRepository   the repository for customer retrieval
-     * @param restaurantRepository the repository for restaurant retrieval
-     * @param orderDataMapper      the mapper for DTO and entity conversion
+     * @param orderDomainService                         the domain service for
+     *                                                   order logic
+     * @param orderRepository                            the repository for order
+     *                                                   persistence
+     * @param customerRepository                         the repository for customer
+     *                                                   retrieval
+     * @param restaurantRepository                       the repository for
+     *                                                   restaurant retrieval
+     * @param orderDataMapper                            the mapper for DTO and
+     *                                                   entity conversion
+     * @param orderCreatedPaymentRequestMessagePublisher the publisher for payment
+     *                                                   request messages
      */
     public OrderCreateHelper(IOrderDomainService orderDomainService, IOrderRepository orderRepository,
             ICustomerRepository customerRepository, IRestaurantRepository restaurantRepository,
-            OrderDataMapper orderDataMapper) {
+            OrderDataMapper orderDataMapper,
+            OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher) {
         this.orderDomainService = orderDomainService;
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.restaurantRepository = restaurantRepository;
         this.orderDataMapper = orderDataMapper;
+        this.orderCreatedPaymentRequestMessagePublisher = orderCreatedPaymentRequestMessagePublisher;
     }
 
     /**
@@ -94,7 +109,8 @@ public class OrderCreateHelper {
         checkCustomer(createOrderCommand.getCustomerId());
         Restaurant restaurant = checkRestaurant(createOrderCommand);
         Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
-        OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant);
+        OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant,
+                orderCreatedPaymentRequestMessagePublisher);
         saveOrder(order);
         log.info("Order is created with id {}", orderCreatedEvent.getOrder().getId().getValue().toString());
         return orderCreatedEvent;

@@ -11,5 +11,8 @@ package com.food.ordering.system.domain.event;
  * @param <T> the type of the entity or aggregate root associated with the event
  */
 public interface IDomainEvent<T> {
-
+    /**
+     * Fires the domain event, triggering any associated handlers or listeners.
+     */
+    void fire();
 }
